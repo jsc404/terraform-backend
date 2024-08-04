@@ -21,14 +21,7 @@ This Terraform configuration sets up an S3 bucket for secure state storage with:
 
 **Usage:**
 
-1. Clone & navigate to the repository:
-
-    ```sh
-    git clone https://your-username/terraform-backend.git
-    cd terraform-backend
-    ```
-
-2. Create `terraform.tfvars` and configure variables (replace placeholders):
+1. Create `terraform.tfvars` and configure variables (replace placeholders):
 
     ```hcl
     aws_region          = "eu-west-3"
@@ -36,14 +29,14 @@ This Terraform configuration sets up an S3 bucket for secure state storage with:
     dynamodb_table_name = "terraform_state"
     ```
 
-3. Initialize & Apply Terraform:
+2. Initialize & Apply Terraform:
 
     ```sh
     terraform init
     terraform apply
     ```
 
-4. **Configure Terraform Backend:**
+3. **Configure Terraform Backend:**
 
    After the resources are created, configure your Terraform backend to use the newly created S3 bucket and DynamoDB table. Add the following block to your Terraform configuration:
 
