@@ -1,18 +1,19 @@
-# terraform-backend
+## terraform-backend
 
-This repository contains the Terraform configuration to provision the infrastructure required for hosting Terraform state files on S3.
+This repository contains a Terraform template to provision the infrastructure required for hosting Terraform state files securely on S3.
 
 ## Overview
 
-This Terraform configuration sets up an S3 bucket for secure state storage with:
+This configuration sets up an S3 bucket for secure state storage with:
 
 * Versioning
-* Server-Side Encryption
+* Server-Side Encryption (SSE-S3)
 * Public Access Block
 * DynamoDB for locking
 * IAM Policy for accessing S3 and DynamoDB
-* Lifecycle Rules to delete non-current versions after a specified number of days
-* Lifecycle Rule to abort incomplete multipart uploads after 7 days
+* Lifecycle Rules for versioning and incomplete multipart uploads management
+
+**Note:** If you require Server-Side Encryption with Customer-Managed Keys (SSE-KMS), you'll need to adapt the configuration accordingly.
 
 **Requirements:**
 
@@ -21,22 +22,29 @@ This Terraform configuration sets up an S3 bucket for secure state storage with:
 
 **Usage:**
 
-1. Create `terraform.tfvars` and configure variables (replace placeholders):
+1. **Clone this repository:**
 
-    ```hcl
-    aws_region          = "eu-west-3"
-    s3_bucket_name      = "your-unique-bucket-name"
-    dynamodb_table_name = "terraform_state"
-    ```
+   ```sh
+   git clone https://github.com/u8717/terraform-backend.git
+   cd terraform-backend
+   ```
 
-2. Initialize & Apply Terraform:
+2. Create `terraform.tfvars` and configure variables (replace placeholders):
 
-    ```sh
-    terraform init
-    terraform apply
-    ```
+   ```hcl
+   aws_region          = "eu-west-3"
+   s3_bucket_name      = "your-unique-bucket-name"
+   dynamodb_table_name = "terraform_state"
+   ```
 
-3. **Configure Terraform Backend:**
+3. Initialize & Apply Terraform:
+
+   ```sh
+   terraform init
+   terraform apply
+   ```
+
+4. **Configure Terraform Backend:**
 
    After the resources are created, configure your Terraform backend to use the newly created S3 bucket and DynamoDB table. Add the following block to your Terraform configuration:
 
