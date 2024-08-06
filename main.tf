@@ -101,6 +101,7 @@ resource "aws_dynamodb_table" "terraform_state" {
 }
 
 # IAM Policy for accessing S3 and DynamoDB
+# TODO: Ensure the IAM policy follows the principle of least privilege
 resource "aws_iam_policy" "terraform_state_access" {
   name        = "TerraformStateAccess"
   description = "Policy for Terraform to access S3 and DynamoDB for state management"
