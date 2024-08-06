@@ -1,4 +1,4 @@
-## terraform-backend
+# terraform-backend
 
 This repository contains a Terraform template to provision the infrastructure required for hosting Terraform state files securely on S3.
 
@@ -6,19 +6,19 @@ This repository contains a Terraform template to provision the infrastructure re
 
 This configuration sets up an S3 bucket for secure state storage with:
 
-* Versioning
-* Server-Side Encryption (SSE-S3)
-* Public Access Block
-* DynamoDB for locking
-* IAM Policy for accessing S3 and DynamoDB
-* Lifecycle Rules for versioning and incomplete multipart uploads management
+- Versioning
+- Server-Side Encryption (SSE-S3)
+- Public Access Block
+- DynamoDB for locking
+- IAM Policy for accessing S3 and DynamoDB
+- Lifecycle Rules for versioning and incomplete multipart uploads management
 
 **Note:** If you require Server-Side Encryption with Customer-Managed Keys (SSE-KMS), you'll need to adapt the configuration accordingly.
 
 **Requirements:**
 
-* AWS Account with S3 & DynamoDB permissions
-* Terraform installed
+- AWS Account with S3 & DynamoDB permissions
+- Terraform installed
 
 **Usage:**
 

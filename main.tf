@@ -1,9 +1,21 @@
+terraform {
+  required_version = ">= 1.2.0"  # Replace with the desired version
+}
+
 # Provider configuration for AWS
 provider "aws" {
   region = var.aws_region
 }
 
 # S3 bucket to store Terraform state
+# CKV_AWS_18 - might generate excessive logs due to frequent state operations
+# CKV2_AWS_62 - might lead to a high volume of notifications for state updates
+# CKV_AWS_144 - Depending on your usecase consider addressing this.
+# trunk-ignore(trivy/s3-bucket-logging)
+# trunk-ignore(checkov/CKV2_AWS_62)
+# trunk-ignore(checkov/CKV_AWS_144)
+# trunk-ignore(checkov/CKV_AWS_145)
+# trunk-ignore(checkov/CKV_AWS_18)
 resource "aws_s3_bucket" "terraform_state" {
   bucket = var.s3_bucket_name
 
@@ -27,6 +39,7 @@ resource "aws_s3_bucket_versioning" "terraform_state" {
 }
 
 # Configure server-side encryption for the S3 bucket
+# trunk-ignore(trivy/AVD-AWS-0132)
 resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" {
   bucket = aws_s3_bucket.terraform_state.id
 
@@ -66,6 +79,11 @@ resource "aws_s3_bucket_lifecycle_configuration" "terraform_state" {
 }
 
 # DynamoDB table for Terraform state locking
+# point-in-time recovery and Table Encryption with KMS may be unneedet since the table is only used for a lock-marker
+# trunk-ignore(trivy/AVD-AWS-0024)
+# trunk-ignore(checkov/CKV_AWS_28)
+# trunk-ignore(checkov/CKV_AWS_119)
+# trunk-ignore(trivy/AVD-AWS-0025)
 resource "aws_dynamodb_table" "terraform_state" {
   name         = var.dynamodb_table_name
   billing_mode = "PAY_PER_REQUEST"
@@ -80,24 +98,6 @@ resource "aws_dynamodb_table" "terraform_state" {
     Name        = "Terraform State Lock Table"
     Environment = "Production"
   }
-}
-
-# Output the name of the DynamoDB table
-output "aws_dynamodb_table_name" {
-  value       = aws_dynamodb_table.terraform_state.name
-  description = "The name of the DynamoDB table for state locking"
-}
-
-# Output the ARN of the S3 bucket
-output "aws_s3_bucket_arn" {
-  value       = aws_s3_bucket.terraform_state.arn
-  description = "The ARN of the S3 bucket for storing Terraform state"
-}
-
-# Output the name of the S3 bucket
-output "aws_s3_bucket_name" {
-  value       = aws_s3_bucket.terraform_state.bucket
-  description = "The name of the S3 bucket for storing Terraform state"
 }
 
 # IAM Policy for accessing S3 and DynamoDB
